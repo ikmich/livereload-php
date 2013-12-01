@@ -3,7 +3,7 @@ Livereload automatically refreshes your web app or web site page when you save f
 
 # USAGE
 ================================================================================
-1.	Rename "livereload-master" (or whatever name that Livereload was downloaded as) to simply "livereload".
+1.	Extract the downloaded package (probably "livereload-master") and rename to simply "livereload".
 
 2.	Place the "livereload" folder in your web site/app root directory.
 
