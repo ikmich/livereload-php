@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	
+	<!-- The path to the root directory (or the directory within which you want to limit livereload's search for changes). If empty, $_SERVER["DOCUMENT_ROOT"] is used. -->
+	<root-path></root-path>
+	
+	<ignore-dirs>
+		<!-- List of directories to ignore. Use root-relative directory paths. -->
+		<!--
+		<dir>relative/path/to/dir1</dir>
+		<dir>relative/path/to/dir2</dir>
+		-->
+	</ignore-dirs>
+	
+	<ignore-files>
+		<!-- List of files to ignore. Use root-relative file paths. -->
+		<!--
+		<file>relative/path/to/file1.ext</file>
+		<file>relative/path/to/file2.ext</file>
+		-->
+	</ignore-files>
+	
+</config>
