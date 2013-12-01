@@ -1,14 +1,15 @@
 <?php
 /*
- * Use libraries.
+ * @author Ikenna Michael (http://github.com/ikmich/)
+ * @email michfx@gmail.com
  */
+
+// Use libraries.
 require_once "lib/cogphp/session/CogSession.class.php";
 require_once "lib/cogphp/filecontext/CogFS.class.php";
 require_once "lib/cogphp/filecontext/CogDir.class.php";
 
-/*
- * Start session.
- */
+// Start session.
 CogSession::start();
 
 class Context

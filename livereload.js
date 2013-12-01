@@ -1,7 +1,8 @@
 /*
- * Livereload requires jQuery but comes bundled with it and loads jQuery
- * dynamically if it is not already available on the page.
+ * @author Ikenna Michael (http://github.com/ikmich/)
+ * @email michfx@gmail.com
  */
+
 (function() {
 
 	var SUCCESS_RESULT = '1';

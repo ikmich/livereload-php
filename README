@@ -1,0 +1,24 @@
+
+Livereload automatically refreshes your web app or web site page when you save file changes. With Livereload, you can have your web site/app page reload automatically when you save a file after a change. Manual refreshing can be a chore and a time killer most especially when you are making "try-observe-try" modifications, or you have a short deadline.
+
+# USAGE
+================================================================================
+1.	Place the "livereload" folder in your web site/app root directory.
+
+2.	Place a <script> tag in your page to reference "livereload.js"
+	e.g. <script type="text/javascript" src="livereload.js"></script>
+
+3.	[Optional] Edit "livereload.xml" to achieve any of the following intents: 
+	-> Specify the directory path to which you want to limit livereload.
+	-> Add directory and file paths (relative to your site root) that you want livereload to ignore when checking for changes.
+
+4.	[Optional] Inside "livereload.js", edit the ROOT_DIR variable to have the value of the path to the directory which you want livereload.js to use as the site root (otherwise, all livereload-related URLs will simply be prefixed by "/", which references the server-configured document root).
+
+4.	Launch or reload your page to activate "livereload.js".
+
+
+# NOTES
+================================================================================
+-> Livereload is currently available for PHP only. Plans for C# underway.
+-> Livereload comes bundled with jQuery and loads it dynamically if jQuery is not available on the page.
+-> Livereload uses a few external php library classes as indicated by the PHP includes at the top of "livereload.php"
