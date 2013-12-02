@@ -167,7 +167,7 @@ class Context
 			return;
 
 		$configXml = simplexml_load_file("livereload.xml");
-		self::$config["base-dir"] = (string) $configXml->{"base-dir"}["value"];
+		self::$config["root-path"] = (string) $configXml->{"root-path"}["value"];
 		foreach ($configXml->{"ignore-dirs"}->children() as $dir)
 		{
 			self::$config["ignore-dirs"][] = CogFS::normalize(realpath((string) $dir));
