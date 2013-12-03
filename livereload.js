@@ -5,16 +5,18 @@
 
 (function() {
 
-	var SUCCESS_RESULT = '1';
-
 	/*
 	 * Edit ROOT_DIR to the directory path of the site root (where livereload should be located).
 	 */
 	var ROOT_DIR = '';
 
+	var RESULT_MODIFIED = '1';
+	var REFRESH_INTERVAL = 400; // ms
+	var INITIAL_DELAY = 1000; // ms
+
 	function reload()
 	{
-		location.reload();
+		location.reload(true);
 	}
 
 	function livereload()
@@ -24,14 +26,14 @@
 			function reloadCheck()
 			{
 				$.get(ROOT_DIR + '/livereload/livereload.php', function(response) {
-					if (SUCCESS_RESULT === response)
+					if (RESULT_MODIFIED === response)
 					{
-						setTimeout(reload, 10);
+						reload();
 					}
-					setTimeout(reloadCheck, 400);
+					setTimeout(reloadCheck, REFRESH_INTERVAL);
 				});
 			}
-			setTimeout(reloadCheck, 1000);
+			setTimeout(reloadCheck, INITIAL_DELAY);
 		});
 	}
 

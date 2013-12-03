@@ -21,6 +21,5 @@ Livereload automatically refreshes your web app or web site page when you save f
 
 # NOTES
 ================================================================================
--> Livereload is currently available for PHP only. Plans for C# underway.
 -> Livereload comes bundled with jQuery and loads it dynamically if jQuery is not available on the page.
 -> Livereload uses a few external php library classes as indicated by the PHP includes at the top of "livereload.php".

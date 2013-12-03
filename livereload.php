@@ -17,8 +17,8 @@ class Context
 
 	const SESS_MOD_TIMES = 'mod_times';
 	const SESS_HAS_INDEX = 'has_index';
-	const SUCCESS_RESULT = 1;
-	const ERROR_RESULT = 0;
+	const RESULT_MODIFIED = 1;
+	const RESULT_NO_MODIFIED = 0;
 
 	private static $sessModifiedTimes = array();
 	private static $has_modified = false;
@@ -32,11 +32,11 @@ class Context
 			$root = (string) $config->{"root-path"};
 			if (!empty($root))
 			{
-				return realpath($root);
+				return CogFS::normalize(realpath($root));
 			}
 		}
 
-		return $_SERVER['DOCUMENT_ROOT'];
+		return CogFS::normalize($_SERVER['DOCUMENT_ROOT']);
 	}
 
 	private static function fn_collectIndex($dirPath)
@@ -44,11 +44,19 @@ class Context
 		$files = CogDir::getFiles($dirPath);
 		foreach ($files as $filename)
 		{
-			if ($filename == '.' || $filename == '..')
+//			if ($filename == '.' || $filename == '..')
+//			{
+//				continue;
+//			}
+
+			$filepath = $dirPath . '/' . $filename;
+
+			// Ignore marked files in livereload.xml
+			if (in_array($filepath, self::$config["ignore-files"]))
 			{
 				continue;
 			}
-			$filepath = $dirPath . '/' . $filename;
+
 			$modifiedTime = filemtime($filepath);
 			self::$sessModifiedTimes[$filepath] = $modifiedTime;
 		}
@@ -56,11 +64,19 @@ class Context
 		$dirs = CogDir::getFolders($dirPath);
 		foreach ($dirs as $dirname)
 		{
-			if ($dirname == '.' || $dirname == '..')
+//			if ($dirname == '.' || $dirname == '..')
+//			{
+//				continue;
+//			}
+
+			$path = $dirPath . "/" . $dirname;
+
+			//Ignore marked directories in livereoad.xml
+			if (in_array($path, self::$config["ignore-dirs"]))
 			{
 				continue;
 			}
-			$path = $dirPath . "/" . $dirname;
+
 			self::fn_collectIndex($path);
 		}
 	}
@@ -77,10 +93,11 @@ class Context
 		$files = CogDir::getFiles($dirPath);
 		foreach ($files as $filename)
 		{
-			if ($filename == '.' || $filename == '..')
-			{
-				continue;
-			}
+//			if ($filename == '.' || $filename == '..')
+//			{
+//				continue;
+//			}
+			
 			$filepath = $dirPath . '/' . $filename;
 			$modifiedTime = filemtime($filepath);
 
@@ -93,26 +110,26 @@ class Context
 			// Check if this filepath and modified time exist in the session index data.
 			foreach (self::$sessModifiedTimes as $key => $value)
 			{
-				if ($key == $filepath)
+				if ($key == $filepath && $value !== $modifiedTime)
 				{
-					if ($value !== $modifiedTime)
-					{
-						// A file has been modified.
-						self::$sessModifiedTimes[$filepath] = $modifiedTime;
-						CogSession::save(self::SESS_MOD_TIMES, self::$sessModifiedTimes);
-						self::$has_modified = true;
+					// A file has been modified.
+					self::$sessModifiedTimes[$filepath] = $modifiedTime;
+					CogSession::save(self::SESS_MOD_TIMES, self::$sessModifiedTimes);
+					self::$has_modified = true;
 
-						/*
-						 * Return now to exit the loop. We only need to have one file modified.
-						 * This would prevent multiple reloads when more than one file is modified.
-						 * Upon return, the session data will be reset so that the file index can
-						 * be collected again.
-						 */
-						return;
-					}
+					/*
+					 * Return now to exit the loop. We only need to have one file modified.
+					 * This would prevent multiple reloads when more than one file is modified.
+					 * Upon return, the session data will be reset so that the file index can
+					 * be collected again.
+					 */
+					return;
 				}
 			}
 
+			/*
+			 * If this filepath has not been indexed (maybe a new file?) index it and save in session.
+			 */
 			if (!array_key_exists($filepath, self::$sessModifiedTimes))
 			{
 				self::$sessModifiedTimes[$filepath] = $modifiedTime;
@@ -125,10 +142,11 @@ class Context
 		$dirs = CogDir::getFolders($dirPath);
 		foreach ($dirs as $dirname)
 		{
-			if ($dirname == '.' || $dirname == '..')
-			{
-				continue;
-			}
+//			if ($dirname == '.' || $dirname == '..')
+//			{
+//				continue;
+//			}
+			
 			$path = $dirPath . "/" . $dirname;
 
 			//Ignore marked directories in livereoad.xml
@@ -153,11 +171,11 @@ class Context
 			 * one file was modified.
 			 */
 			self::resetState();
-			return self::SUCCESS_RESULT;
+			return self::RESULT_MODIFIED;
 		}
 		else
 		{
-			return self::ERROR_RESULT;
+			return self::RESULT_NO_MODIFIED;
 		}
 	}
 
@@ -170,12 +188,12 @@ class Context
 		self::$config["root-path"] = (string) $configXml->{"root-path"}["value"];
 		foreach ($configXml->{"ignore-dirs"}->children() as $dir)
 		{
-			self::$config["ignore-dirs"][] = CogFS::normalize(realpath((string) $dir));
+			self::$config["ignore-dirs"][] = CogFS::normalize(realpath(self::getDocRoot() . "/" . (string) $dir));
 		}
 
 		foreach ($configXml->{"ignore-files"}->children() as $file)
 		{
-			self::$config["ignore-files"][] = CogFS::normalize(realpath((string) $file));
+			self::$config["ignore-files"][] = CogFS::normalize(realpath(self::getDocRoot() . "/" . (string) $file));
 		}
 	}
 
